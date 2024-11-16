@@ -13,3 +13,5 @@ pypdf
 pandas
 numpy
 faiss-cpu
+matplotlib
+seaborn
