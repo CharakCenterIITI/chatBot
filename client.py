@@ -1,12 +1,13 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 from io import StringIO
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 import os
-import streamlit as st
 
 # Access OpenAI API key from Streamlit secrets
 OPENAI_API_KEY = st.secrets["OPENAI"]["API_KEY"]
@@ -24,7 +25,7 @@ llm = OpenAI(temperature=0.7)
 prompt = PromptTemplate(
     input_variables=["combined_input"],
     template=(
-        "You are a helpful and knowledgeable DataBot. The user has uploaded a dataset and is asking questions about it.\n\n"
+        "You are a helpful and knowledgeable ChatBot. The user has uploaded a dataset and is asking questions about it.\n\n"
         "{combined_input}\n\n"
         "Your response:"
     ),
@@ -37,7 +38,7 @@ memory = ConversationBufferMemory(memory_key="history", return_messages=True)
 chain = LLMChain(llm=llm, prompt=prompt, memory=memory)
 
 # Streamlit UI
-st.title("🤖 Chat with DataBot powered by Charak Centers")
+st.title("🤖 Chat with ChatBot powered by Charak Center")
 st.write("Upload a CSV file and ask me anything about the dataset!")
 
 # Session state for chat history and file
@@ -66,6 +67,28 @@ if uploaded_file:
         st.write("Here's a preview of your uploaded dataset:")
         st.dataframe(df)
 
+        # Visualization section
+        st.subheader("Step 2: Visualize Your Data")
+        st.write("Create basic visualizations to explore the data.")
+
+        # Dropdowns for graph selection
+        x_axis = st.selectbox("Select X-axis", options=df.columns, key="x_axis")
+        y_axis = st.selectbox("Select Y-axis", options=df.columns, key="y_axis")
+        graph_type = st.selectbox("Select Graph Type", options=["Scatter", "Line", "Bar", "Histogram"], key="graph_type")
+
+        if st.button("Generate Graph"):
+            fig, ax = plt.subplots()
+            if graph_type == "Scatter":
+                sns.scatterplot(data=df, x=x_axis, y=y_axis, ax=ax)
+            elif graph_type == "Line":
+                sns.lineplot(data=df, x=x_axis, y=y_axis, ax=ax)
+            elif graph_type == "Bar":
+                sns.barplot(data=df, x=x_axis, y=y_axis, ax=ax)
+            elif graph_type == "Histogram":
+                sns.histplot(data=df, x=x_axis, ax=ax)
+
+            st.pyplot(fig)
+
     except pd.errors.EmptyDataError:
         st.error("The uploaded CSV file is empty. Please upload a valid CSV file.")
         st.session_state.uploaded_file = None
@@ -75,7 +98,7 @@ if uploaded_file:
 chat_placeholder = st.container()
 
 # Chat interface
-st.subheader("Step 2: Chat with DataBot")
+st.subheader("Step 3: Ask Anything")
 query = st.text_input("Type your question about the dataset and press Enter 👇")
 
 if query and st.session_state.dataset_summary:
@@ -114,6 +137,7 @@ if st.button("Clear Chat"):
 # If no file is uploaded
 if not st.session_state.dataset_summary:
     st.info("Please upload a dataset file first to start chatting.")
+
 
 
 
