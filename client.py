@@ -6,14 +6,16 @@ from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
 import os
-from dotenv import load_dotenv
+import streamlit as st
 
-# Load environment variables
-load_dotenv()
+# Access OpenAI API key from Streamlit secrets
+OPENAI_API_KEY = st.secrets["OPENAI"]["API_KEY"]
 
-# Access the OpenAI API key
-OPENAI_API_KEY = os.getenv("OPENAI_KEYS")
-os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+if not OPENAI_API_KEY:
+    raise ValueError("The OpenAI API key is missing!")
+
+# Set the OpenAI API key for the environment
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # Initialize OpenAI LLM for LangChain
 llm = OpenAI(temperature=0.7)
