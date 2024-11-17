@@ -106,9 +106,18 @@ with chat_placeholder:
 
 # Clear chat button (optional)
 if st.button("Clear Chat"):
-    st.session_state.chat_history = []
-    st.session_state.uploaded_file = None
-    st.session_state.dataset_summary = None
+    if "chat_history" in st.session_state and st.session_state.chat_history:
+        st.session_state.chat_history = []
+        st.success("Chat history cleared!")
+    else:
+        st.warning("No chat history to clear.")
+
+    if "uploaded_file" in st.session_state:
+        st.session_state.uploaded_file = None
+    if "dataset_summary" in st.session_state:
+        st.session_state.dataset_summary = None
+
+    # Rerun to refresh the app state
     st.experimental_rerun()
 
 # If no file is uploaded
