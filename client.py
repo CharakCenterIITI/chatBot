@@ -24,7 +24,7 @@ llm = OpenAI(temperature=0.7)
 prompt = PromptTemplate(
     input_variables=["combined_input"],
     template=(
-        "You are a helpful and knowledgeable ChatBot. The user has uploaded a dataset and is asking questions about it.\n\n"
+        "You are a helpful and knowledgeable CharakBot. The user has uploaded a dataset and is asking questions about it.\n\n"
         "{combined_input}\n\n"
         "Your response:"
     ),
@@ -37,7 +37,7 @@ memory = ConversationBufferMemory(memory_key="history", return_messages=True)
 chain = LLMChain(llm=llm, prompt=prompt, memory=memory)
 
 # Streamlit UI
-st.title("🤖 Chat with ChatBot powered by Charak Center")
+st.title("Charak Digital healthcare Masterclass on Artificial Intelligence ")
 st.write("Upload a CSV file and ask me anything about the dataset!")
 
 # Session state for chat history and file
@@ -85,7 +85,7 @@ if query and st.session_state.dataset_summary:
     # Combine input variables
     dataset_summary = st.session_state.dataset_summary
     history = "\n".join(
-        [f"User: {msg['content']}" if msg["role"] == "user" else f"DataBot: {msg['content']}" for msg in st.session_state.chat_history]
+        [f"User: {msg['content']}" if msg["role"] == "user" else f"CharakBot: {msg['content']}" for msg in st.session_state.chat_history]
     )
     combined_input = f"Dataset summary:\n{dataset_summary}\n\nConversation history:\n{history}\n\nUser's question:\n{query}"
 
@@ -102,7 +102,7 @@ with chat_placeholder:
         if message["role"] == "user":
             st.markdown(f"**You:** {message['content']}")
         elif message["role"] == "bot":
-            st.markdown(f"**DataBot:** {message['content']}")
+            st.markdown(f"**CharakBot:** {message['content']}")
 
 # Clear chat button (optional)
 if st.button("Clear Chat"):
