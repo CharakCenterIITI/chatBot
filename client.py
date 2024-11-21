@@ -104,6 +104,8 @@ if not st.session_state.uploaded_file:
 if st.button("Clear Chat"):
     st.session_state.chat_history = []
     st.session_state.uploaded_file = None
+    # Simulate a rerun by setting query parameters
+    st.experimental_set_query_params()
 
 
 
